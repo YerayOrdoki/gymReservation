@@ -1,0 +1,322 @@
+:root {
+  font-family: Inter, system-ui, sans-serif;
+  color: #0f172a;
+  background: #f8fafc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.app-shell {
+  min-height: 100vh;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.topbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.app-subtitle {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.app-main {
+  padding: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: 16px;
+}
+
+.page-header h2 {
+  margin: 0 0 6px;
+}
+
+.weekly-header {
+  margin-bottom: 20px;
+}
+
+.muted {
+  color: #64748b;
+}
+
+.screen-center {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+}
+
+.form-stack {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.form-stack input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: white;
+}
+
+.primary-button,
+.secondary-button,
+.link-button {
+  border: none;
+  border-radius: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+}
+
+.primary-button {
+  background: #0f766e;
+  color: white;
+}
+
+.primary-button:disabled,
+.secondary-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.secondary-button {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.link-button {
+  background: transparent;
+  color: #0f172a;
+}
+
+.success-text {
+  color: #166534;
+  margin: 0 0 12px;
+}
+
+.error-text {
+  color: #b91c1c;
+  margin: 0 0 12px;
+}
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 210px);
+  gap: 14px;
+  align-items: start;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 12px;
+  scrollbar-gutter: stable;
+}
+
+.week-grid::-webkit-scrollbar {
+  height: 10px;
+}
+
+.week-grid::-webkit-scrollbar-track {
+  background: #e2e8f0;
+  border-radius: 999px;
+}
+
+.week-grid::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 999px;
+}
+
+.week-grid::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+.day-column {
+  min-height: 100%;
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.day-header {
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 12px;
+}
+
+.day-weekday {
+  margin: 0;
+  font-size: 1.5rem;
+  line-height: 1.1;
+  text-transform: capitalize;
+  color: #0f172a;
+}
+
+.day-date {
+  margin: 6px 0 0;
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+.day-slots {
+  display: grid;
+  gap: 10px;
+}
+
+.slot-card {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+}
+
+.slot-card-button {
+  all: unset;
+  display: grid;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.slot-card-static {
+  display: grid;
+  gap: 6px;
+}
+
+.slot-card-button:disabled {
+  cursor: not-allowed;
+}
+
+.slot-time {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.slot-state {
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+.slot-free {
+  background: #dcfce7;
+  border-color: #86efac;
+  color: #166534;
+}
+
+.slot-selected {
+  background: #99f6e4;
+  border-color: #14b8a6;
+  color: #134e4a;
+}
+
+.slot-reserved {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #7f1d1d;
+}
+
+.slot-mine {
+  background: #dbeafe;
+  border-color: #93c5fd;
+  color: #1e3a8a;
+}
+
+.slot-past {
+  background: #111827;
+  border-color: #111827;
+  color: #f9fafb;
+}
+
+.slot-action-button {
+  width: 100%;
+}
+
+.reserve-bar {
+  position: sticky;
+  bottom: 0;
+  margin-top: 20px;
+  padding-top: 12px;
+  background: linear-gradient(to top, #f8fafc 75%, rgba(248, 250, 252, 0));
+}
+
+.list-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.booking-card h3 {
+  margin-top: 0;
+}
+
+@media (max-width: 720px) {
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .topbar-nav {
+    width: 100%;
+  }
+
+  .app-main {
+    padding: 16px;
+  }
+
+  .week-grid {
+    grid-template-columns: 1fr;
+    overflow-x: visible;
+    padding-bottom: 0;
+  }
+
+  .day-weekday {
+    font-size: 1.35rem;
+  }
+}
