@@ -41,6 +41,7 @@ export function SlotsPage() {
   const [error, setError] = useState<string | null>(null)
   const [reserving, setReserving] = useState(false)
   const [cancellingId, setCancellingId] = useState<string | null>(null)
+  const [openMobileDay, setOpenMobileDay] = useState<string | null>(null)
 
   const getTodayString = () => {
     const now = new Date()
@@ -65,6 +66,8 @@ export function SlotsPage() {
   const loadData = async () => {
     setLoading(true)
     setError(null)
+
+    await supabase.auth.refreshSession()
 
     const { data: sessionData } = await supabase.auth.getSession()
     const userId = sessionData.session?.user?.id ?? null
@@ -236,7 +239,7 @@ export function SlotsPage() {
       slotsByDate.set(slot.slot_date, currentDaySlots)
     }
 
-    return Array.from(slotsByDate.entries()).map(([date, daySlots]) => {
+    const groups = Array.from(slotsByDate.entries()).map(([date, daySlots]) => {
       const jsDate = new Date(`${date}T12:00:00`)
 
       return {
@@ -248,7 +251,80 @@ export function SlotsPage() {
         ),
       }
     })
+
+    return groups
   }, [slots])
+
+  useEffect(() => {
+    if (dayGroups.length > 0 && !openMobileDay) {
+      setOpenMobileDay(dayGroups[0].date)
+    }
+  }, [dayGroups, openMobileDay])
+
+  const renderSlotCard = (slot: Slot) => {
+    const booking = getBookingForSlot(slot.id)
+    const isMine = booking?.user_id === currentUserId
+    const isSelected = selectedSlots.includes(slot.id)
+
+    let className = 'slot-card slot-free'
+
+    if (slot.is_blocked) {
+      className = 'slot-card slot-past'
+    } else if (isMine) {
+      className = 'slot-card slot-mine'
+    } else if (booking) {
+      className = 'slot-card slot-reserved'
+    } else if (isSelected) {
+      className = 'slot-card slot-selected'
+    }
+
+    return (
+      <div key={slot.id} className={className}>
+        {slot.is_blocked ? (
+          <div className="slot-card-static">
+            <span className="slot-time">
+              {slot.start_time.slice(0, 5)} - {slot.end_time.slice(0, 5)}
+            </span>
+            <span className="slot-state">Amaituta</span>
+          </div>
+        ) : (
+          <>
+            <button
+              type="button"
+              className="slot-card-button"
+              onClick={() => toggleSelectSlot(slot)}
+              disabled={Boolean(booking)}
+            >
+              <span className="slot-time">
+                {slot.start_time.slice(0, 5)} - {slot.end_time.slice(0, 5)}
+              </span>
+
+              <span className="slot-state">
+                {isMine
+                  ? 'Nire erreserba'
+                  : booking
+                    ? `${getBookingName(booking)}-k erreserbatuta`
+                    : isSelected
+                      ? 'Hautatuta'
+                      : 'Erabilgarri'}
+              </span>
+            </button>
+
+            {isMine && booking && (
+              <button
+                type="button"
+                className="secondary-button slot-action-button"
+                onClick={() => handleCancelOwnBooking(booking.id)}
+                disabled={cancellingId === booking.id}
+              >
+                {cancellingId === booking.id ? 'Ezeztatzen...' : 'Ezeztatu'}
+              </button>
+            )}
+          </>
+        )}
+      </div>
+    )
+  }
 
   if (loading) {
     return <div className="screen-center">Ordutegiak kargatzen...</div>
@@ -267,7 +343,7 @@ export function SlotsPage() {
       {message && <p className="success-text">{message}</p>}
       {error && <p className="error-text">{error}</p>}
 
-      <div className="week-grid">
+      <div className="week-grid desktop-only">
         {dayGroups.map((day) => (
           <section key={day.date} className="day-column card">
             <header className="day-header">
@@ -276,77 +352,59 @@ export function SlotsPage() {
             </header>
 
             <div className="day-slots">
-              {day.slots.map((slot) => {
-                const booking = getBookingForSlot(slot.id)
-                const isMine = booking?.user_id === currentUserId
-                const isSelected = selectedSlots.includes(slot.id)
-
-                let className = 'slot-card slot-free'
-
-                if (slot.is_blocked) {
-                  className = 'slot-card slot-past'
-                } else if (isMine) {
-                  className = 'slot-card slot-mine'
-                } else if (booking) {
-                  className = 'slot-card slot-reserved'
-                } else if (isSelected) {
-                  className = 'slot-card slot-selected'
-                }
-
-                return (
-                  <div key={slot.id} className={className}>
-                    {slot.is_blocked ? (
-                      <div className="slot-card-static">
-                        <span className="slot-time">
-                          {slot.start_time.slice(0, 5)} -{' '}
-                          {slot.end_time.slice(0, 5)}
-                        </span>
-                        <span className="slot-state">Amaituta</span>
-                      </div>
-                    ) : (
-                      <>
-                        <button
-                          type="button"
-                          className="slot-card-button"
-                          onClick={() => toggleSelectSlot(slot)}
-                          disabled={Boolean(booking)}
-                        >
-                          <span className="slot-time">
-                            {slot.start_time.slice(0, 5)} -{' '}
-                            {slot.end_time.slice(0, 5)}
-                          </span>
-
-                          <span className="slot-state">
-                            {isMine
-                              ? 'Nire erreserba'
-                              : booking
-                                ? `${getBookingName(booking)}-k erreserbatuta`
-                                : isSelected
-                                  ? 'Hautatuta'
-                                  : 'Erabilgarri'}
-                          </span>
-                        </button>
-
-                        {isMine && booking && (
-                          <button
-                            type="button"
-                            className="secondary-button slot-action-button"
-                            onClick={() => handleCancelOwnBooking(booking.id)}
-                            disabled={cancellingId === booking.id}
-                          >
-                            {cancellingId === booking.id
-                              ? 'Ezeztatzen...'
-                              : 'Ezeztatu'}
-                          </button>
-                        )}
-                      </>
-                    )}
-                  </div>
-                )
-              })}
+              {day.slots.map((slot) => renderSlotCard(slot))}
             </div>
           </section>
         ))}
+      </div>
+
+      <div className="mobile-days mobile-only">
+        {dayGroups.map((day) => {
+          const isOpen = openMobileDay === day.date
+          const buttonId = `day-button-${day.date}`
+          const panelId = `day-panel-${day.date}`
+
+          return (
+            <section key={day.date} className="mobile-day card">
+              <h3 className="mobile-day-heading">
+                <button
+                  id={buttonId}
+                  type="button"
+                  className="mobile-day-toggle"
+                  aria-expanded={isOpen}
+                  aria-controls={panelId}
+                  onClick={() =>
+                    setOpenMobileDay((current) =>
+                      current === day.date ? null : day.date
+                    )
+                  }
+                >
+                  <span>
+                    <span className="mobile-day-weekday">{day.weekdayLabel}</span>
+                    <span className="mobile-day-date">{day.dateLabel}</span>
+                  </span>
+
+                  <span className="mobile-day-icon" aria-hidden="true">
+                    {isOpen ? '−' : '+'}
+                  </span>
+                </button>
+              </h3>
+
+              <div
+                id={panelId}
+                role="region"
+                aria-labelledby={buttonId}
+                className={`mobile-day-panel ${isOpen ? 'is-open' : ''}`}
+              >
+                <div className="mobile-day-panel-inner">
+                  <div className="day-slots">
+                    {day.slots.map((slot) => renderSlotCard(slot))}
+                  </div>
+                </div>
+              </div>
+            </section>
+          )
+        })}
       </div>
 
       <div className="reserve-bar">
