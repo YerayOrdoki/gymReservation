@@ -336,21 +336,21 @@ export function SlotsPage() {
       {error && <p className="error-text">{error}</p>}
 
       <div className="week-scroll-shell desktop-only">
-  <div className="week-grid">
-    {dayGroups.map((day) => (
-      <section key={day.date} className="day-column card">
-        <header className="day-header">
-          <h3 className="day-weekday">{day.weekdayLabel}</h3>
-          <p className="day-date">{day.dateLabel}</p>
-        </header>
+        <div className="week-grid">
+          {dayGroups.map((day) => (
+            <section key={day.date} className="day-column card">
+              <header className="day-header">
+                <h3 className="day-weekday">{day.weekdayLabel}</h3>
+                <p className="day-date">{day.dateLabel}</p>
+              </header>
 
-        <div className="day-slots">
-          {day.slots.map((slot) => renderSlotCard(slot))}
+              <div className="day-slots">
+                {day.slots.map((slot) => renderSlotCard(slot))}
+              </div>
+            </section>
+          ))}
         </div>
-      </section>
-    ))}
-  </div>
-</div>
+      </div>
 
       <div className="mobile-days mobile-only">
         {dayGroups.map((day) => {

@@ -169,12 +169,12 @@ input {
   width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
-  padding-bottom: 12px;
+  padding: 0 0 16px;
   scrollbar-gutter: stable;
 }
 
 .week-scroll-shell::-webkit-scrollbar {
-  height: 10px;
+  height: 12px;
 }
 
 .week-scroll-shell::-webkit-scrollbar-track {
@@ -192,23 +192,21 @@ input {
 }
 
 .week-grid {
-  display: inline-grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 210px;
-  gap: 14px;
-  align-items: start;
+  display: grid;
+  grid-template-columns: repeat(7, 260px);
+  gap: 16px;
+  width: max-content;
   min-width: max-content;
-  padding-inline: 20px;
-  scroll-snap-type: x proximity;
+  padding: 0 20px;
+  align-items: start;
 }
 
 .day-column {
-  width: 210px;
-  min-height: 100%;
+  width: 260px;
+  min-width: 260px;
   display: grid;
+  align-content: start;
   gap: 14px;
-  align-items: start;
-  scroll-snap-align: start;
 }
 
 .day-header {
@@ -306,9 +304,13 @@ input {
 .reserve-bar {
   position: sticky;
   bottom: 0;
-  margin-top: 20px;
-  padding-top: 12px;
-  background: linear-gradient(to top, #f8fafc 75%, rgba(248, 250, 252, 0));
+  z-index: 10;
+  width: fit-content;
+  margin: 20px auto 0;
+  padding: 12px;
+  background: rgba(248, 250, 252, 0.92);
+  backdrop-filter: blur(8px);
+  border-radius: 14px;
 }
 
 .list-stack {
