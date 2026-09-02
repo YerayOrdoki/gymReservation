@@ -239,7 +239,7 @@ export function SlotsPage() {
       slotsByDate.set(slot.slot_date, currentDaySlots)
     }
 
-    const groups = Array.from(slotsByDate.entries()).map(([date, daySlots]) => {
+    return Array.from(slotsByDate.entries()).map(([date, daySlots]) => {
       const jsDate = new Date(`${date}T12:00:00`)
 
       return {
@@ -251,15 +251,7 @@ export function SlotsPage() {
         ),
       }
     })
-
-    return groups
   }, [slots])
-
-  useEffect(() => {
-    if (dayGroups.length > 0 && !openMobileDay) {
-      setOpenMobileDay(dayGroups[0].date)
-    }
-  }, [dayGroups, openMobileDay])
 
   const renderSlotCard = (slot: Slot) => {
     const booking = getBookingForSlot(slot.id)
